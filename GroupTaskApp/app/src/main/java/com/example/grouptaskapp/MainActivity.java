@@ -6,16 +6,21 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
     // Array of strings for testing group list
+    User currentUser;
     String[] groupArray = {"EE 461L","Senior Design","EE 460N","HW1: Blog"};
+    //String[] groupArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +38,26 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
+
+
+
+
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, groupArray);
+        //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, currentUser.getGroupList());
 
         ListView listView = (ListView) findViewById(R.id.group_list);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String group = String.valueOf(parent.getItemAtPosition(position));
+                        Intent intent = new Intent(view.getContext(), GroupDetails.class);
+                        intent.putExtra("Group", group);
+                        startActivity(intent);
+                    }
+                }
+        );
 
     }
 
@@ -65,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+
 
 
 

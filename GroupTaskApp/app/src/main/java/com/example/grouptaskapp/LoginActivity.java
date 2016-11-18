@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
+
         // TODO: Implement your own authentication logic here.
 
         new android.os.Handler().postDelayed(
@@ -90,9 +91,12 @@ public class LoginActivity extends AppCompatActivity {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
+
+
                 this.finish();
             }
         }
+        //
     }
 
     @Override
@@ -125,8 +129,8 @@ public class LoginActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4 || password.length() > 15) {
+            _passwordText.setError("between 4 and 15 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);

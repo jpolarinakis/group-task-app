@@ -1,6 +1,5 @@
 package com.example.grouptaskapp;
 
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -23,38 +22,36 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class AddGroupActivity extends AppCompatActivity {
-    private static final String TAG = "AddGroupActivity";
+public class AddTaskActivity extends AppCompatActivity {
+    private static final String TAG = "AddTaskActivity";
 
-    @InjectView(R.id.input_groupName) EditText _groupName;
-    @InjectView(R.id.input_groupSummary) EditText _groupSummary;
-    @InjectView(R.id.textview1) TextView _groupDeadLine;
+    @InjectView(R.id.input_taskName) EditText _taskName;
+    @InjectView(R.id.input_taskSummary) EditText _taskSummary;
+    @InjectView(R.id.textview1) TextView _taskDeadLine;
 
     //@InjectView(R.id.btn_addUsers) Button _addUsers;
-    @InjectView(R.id.btn_addGroup) Button _addButton;
+    @InjectView(R.id.btn_addTask) Button _addButton;
 
-    User currentUser;
-    ArrayList<String> groupUsers;
+    String[] reminderOptions = new String[]{"None","Day Before","Week Before"};
 
-    // TODO: Get all Users and other info from backend
-    // test values
-    String[] allUsers = new String[]{"Richard","Jason","Tim", "Damien", "Carrie","Stephanie"};
-    String admin = "Bruce"; // set admin to current user
+    // Test values
+    String[] groupUsers = new String[]{"Richard","Jason","Tim", "Damien", "Carrie","Stephanie"};
+    ArrayList<String> assignedUsers;
+    // need to assign task to current user
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_group);
+        setContentView(R.layout.activity_add_task);
         ButterKnife.inject(this);
 
 
 
         //Spinner Stuff
         // link: https://github.com/pratikbutani/MultiSelectSpinner
-        // need help getting multispinner to work, only single spinner works right now
-        //MultiSpinner simpleSpinner = (MultiSpinner) findViewById(R.id.simpleMultiSpinner);
-        final List<String> list = Arrays.asList(allUsers);
+
+        final List<String> list = Arrays.asList(groupUsers);
 
         final List<KeyPairBoolData> listArray3 = new ArrayList<>();
 
@@ -71,13 +68,12 @@ public class AddGroupActivity extends AppCompatActivity {
 
             @Override
             public void onItemsSelected(List<KeyPairBoolData> items) {
-                //clear group members array NOTE: another way to get members selected is to
-                groupUsers = new ArrayList<String>();
+                assignedUsers = new ArrayList<String>();
                 for (int i = 0; i < items.size(); i++) {
                     if (items.get(i).isSelected()) {
                         Log.i("TAG", i + " : " + items.get(i).getName() + " : " + items.get(i).isSelected());
                         // save name into group array
-                        groupUsers.add(items.get(i).getName());
+                        assignedUsers.add(items.get(i).getName());
                     }
                 }
             }
@@ -88,7 +84,7 @@ public class AddGroupActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                addGroup();
+                addTask();
             }
         });
 
@@ -98,25 +94,23 @@ public class AddGroupActivity extends AppCompatActivity {
 
 
 
-    public void addGroup() {
+    public void addTask() {
         Log.d(TAG, "Add");
 
         _addButton.setEnabled(false);
 
         //Get all values from fields and save
-        String groupName = _groupName.getText().toString();
-        String groupSummary = _groupSummary.getText().toString();
-        String groupDeadline = _groupDeadLine.getText().toString();
-        // Group members saved in groupUsers arraylist
-        Log.d(TAG, groupName +" : "+ groupSummary +" : " + groupDeadline);
-        for(int t =0; t< groupUsers.size(); ++t){
-            Log.d(TAG, groupUsers.get(t));
+        String taskName = _taskName.getText().toString();
+        String taskSummary = _taskSummary.getText().toString();
+
+        //assignedUsers
+        String taskDeadline = _taskDeadLine.getText().toString();
+        Log.d(TAG, taskName +" : "+ taskSummary +" : " + taskDeadline);
+        for(int t =0; t< assignedUsers.size(); ++t){
+            Log.d(TAG, assignedUsers.get(t));
         }
 
-        //Group newGroup = new Group(groupName,groupSummary,groupDeadline, currentUser, );
-
-
-        // TODO: Send new Group info to backend to be saved
+        // TODO: Send new Task info to backend to be saved
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
