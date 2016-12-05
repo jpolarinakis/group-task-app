@@ -1,4 +1,4 @@
-package refactoredGTA;
+package com.gaedatastore;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,7 @@ public class GetFromDatastore {
 	{
 		this.ds = ds;
 	}
+
 	public Entity get(String typeName, int typeNum)
 	{
 		Key retKey = KeyFactory.createKey(typeName, typeNum);
@@ -21,27 +22,9 @@ public class GetFromDatastore {
 		try {
 			ret = ds.get(retKey);
 		} catch (EntityNotFoundException e) {
-			return null;
+			ret = null;
 		}
-		return ret;
-	}
-	public ArrayList<String> get(Entity e, ArrayList<String> dataTypes)
-	{
-		ArrayList<String> ret = new ArrayList<String>();
-		for(int i = 0; i < dataTypes.size(); i++)
-			ret.add((String) e.getProperty(dataTypes.get(i)));
-		return ret;
-	}
-	public ArrayList<String> get(String typeName, int typeNum, ArrayList<String> dataTypes)
-	{
-		Key retKey = KeyFactory.createKey(typeName, typeNum);
-		Entity ret;
-		try {
-			ret = ds.get(retKey);
-		} catch (EntityNotFoundException e) {
-			return null;
-		}
-		return this.get(ret, dataTypes);
+		return  ret;
 	}
 
 }

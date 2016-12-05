@@ -1,4 +1,4 @@
-package refactoredGTA;
+package com.gaedatastore;
 
 import java.util.ArrayList;
 
@@ -17,58 +17,31 @@ public class DeleteFromDatastore {
 	public boolean deleteGroup(String groupName, int numGroups)
 	{
 		boolean ret = true;
-		int toDelete = -1;
-		for(int j= 0; j< numGroups; j++)
-		{
-			Key key = KeyFactory.createKey("group_list", j);
-			Entity del;
-			try {
-				del = ds.get(key);
-				String delName = (String) del.getProperty("name");
-				if(delName.equals(groupName))
-				{
-					toDelete = (int) del.getProperty("num");
-				}
-			} catch (EntityNotFoundException e) {
-				return false;
+		int numTasks = -1;
+		GetFromDatastore g = new GetFromDatastore(ds);
+		for(int i = 1; i < numGroups; i++){
+			Entity e = g.get("group_list", i);
+			String gName = (String) e.getProperty("name");
+			if(gName.equals(groupName))
+			{
+				String numTasksString = (String) e.getProperty("num_tasks");
+				numTasks = Integer.valueOf(numTasksString);
 			}
-		}
-		if(toDelete == -1)
+			}
+		if(numTasks == -1)
 			return false;
-		for(int i =0; i < toDelete; i++)
+		for(int i =1; i < numTasks; i++)
 		{
 			Key key = KeyFactory.createKey(groupName, i);
 			ds.delete(key);
 		}
 		return ret;
 	}
-	public boolean deleteUserFromGroup(String user,String group, int numGroups)
+	public boolean deleteTask(String task, String group)
 	{
-		
-		for(int j= 0; j< numGroups; j++)
-		{
-			Key key = KeyFactory.createKey("group_list", j);
-			Entity del;
-			try {
-				del = ds.get(key);
-				String delName = (String) del.getProperty("name");
-				if(delName.equals(group))
-				{
-					ArrayList<String> toDel = (ArrayList<String>) del.getProperty("users");
-					toDel.remove(user);
-					del.setIndexedProperty("users", toDel);
-					ds.put(del);
-					return true;
-				}
-			} catch (EntityNotFoundException e) {
-				return false;
-			}
-		}
-		return true;
-	}
-	public boolean deleteTask(String task, String group, int numGroups)
-	{
-		for(int j= 0; j< numGroups; j++)
+		boolean stop = false;
+		int j =1;
+		while(!stop)
 		{
 			Key key = KeyFactory.createKey(group, j);
 			Entity del;
@@ -78,17 +51,15 @@ public class DeleteFromDatastore {
 				if(delName.equals(task))
 				{
 					ds.delete(key);
+					return true;
 				}
+				j++;
 			} catch (EntityNotFoundException e) {
+				
 				return false;
 			}
+			
 		}
 		return true;
-	}
-	public int getNum(String type, String identifier)
-	{
-		int ret =0;
-		
-		return ret;
 	}
 }

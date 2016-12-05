@@ -1,4 +1,4 @@
-package refactoredGTA;
+package com.gaedatastore;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
@@ -14,14 +14,8 @@ public class ModifyDatastore {
 	}
 	public boolean modify(Update u)
 	{
-		
-		Key retKey = KeyFactory.createKey(u.getTypeName(), u.getTypeNum());
-		Entity mod;
-		try {
-			mod = ds.get(retKey);
-		} catch (EntityNotFoundException e) {
-			return false;
-		}
+		Entity mod = new Entity(u.getTypeName(), u.getTypeNum());
+
 		for(int i =0; i < u.getUpdateData().size();i++)
 			mod.setProperty(u.getUpdateFields().get(i), u.getUpdateData().get(i));
 		ds.put(mod);

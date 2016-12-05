@@ -1,5 +1,4 @@
-package refactoredGTA;
-
+package com.gaedatastore;
 import java.util.ArrayList;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -14,14 +13,16 @@ public class DatastoreHome {
 	AddToDatastore add;
 	ModifyDatastore modify;
 	DeleteFromDatastore delete;
-	private static int USER_NUM = 0;
-	private static int NUM_GROUPS = 0;
+	GetFromDatastore get;
+	static int USER_NUM = 1;
+	static int NUM_GROUPS = 0;
 	/*
 	 * Constructor: makes the class
 	 * */
 	DatastoreHome()
 	{
 		ds = DatastoreServiceFactory.getDatastoreService();
+		get = new GetFromDatastore(ds);
 		add = new AddToDatastore(ds);
 		modify = new ModifyDatastore(ds);
 		delete = new DeleteFromDatastore(ds);
@@ -33,13 +34,17 @@ public class DatastoreHome {
 	public boolean confirmUser(String username, String password)
 	{
 		//find out what kind of "key" you need to import so this doesn't happen
-		for(int i = 0; i < USER_NUM;i++)
+		for(int i = 1; i < USER_NUM;i++)
 		{
-		Key key = KeyFactory.createKey("users", i);
+		Key key = KeyFactory.createKey("user", i);
 		try {
 			Entity users = ds.get(key);
-			if(username.equals(users.getProperty(username))){
-					if(username.equals(users.getProperty(password)))
+			System.out.println("we got here");
+			String newUN = (String) users.getProperty("username");
+			String newPW = (String) users.getProperty("password");
+			if(username.equals(newUN)){
+					System.out.println("this is progress");
+					if(password.equals(newPW))
 						/*
 						 * basically: if username && password are the same return true;
 						 * */
@@ -53,9 +58,9 @@ public class DatastoreHome {
 		 * */
 		return false;
 	}
-	public boolean addNewTask(String project, ArrayList<String> entries, ArrayList<String> data)
+	public boolean addNewTask(String project, ArrayList<String> entries, ArrayList<String> data, int num)
 	{
-		return add.add(project, entries, data);
+		return add.add(project, entries, data, num);
 	}
 	public boolean addNewUser(ArrayList<String> userData, ArrayList<String> data)
 	{
@@ -63,17 +68,18 @@ public class DatastoreHome {
 		String nextUser = Integer.toString(USER_NUM);
 		data.add(nextUser);
 		USER_NUM++;
-		return add.add("user", userData, data);
+		return add.add("user", userData, data, USER_NUM);
 	}
-	public boolean addNewProject(String projName, ArrayList<String> projDetails, ArrayList<String> data)
+	public boolean addNewProject(ArrayList<String> projDetails, ArrayList<String> data)
 	{
-		return add.add(projName, projDetails, data);
+		NUM_GROUPS++;
+		return add.add("group_list", projDetails, data,NUM_GROUPS);
 	}
 	public ArrayList<String> getAllUsers()
 	{
 		ArrayList<String> ret = new ArrayList<String>();
-		for(int i = 0; i <USER_NUM; i++){
-			Key key = KeyFactory.createKey("users", i);
+		for(int i = 1; i <USER_NUM; i++){
+			Key key = KeyFactory.createKey("user", i);
 			try {
 				Entity users = ds.get(key);
 				String un = (String) users.getProperty("username");
